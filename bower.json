@@ -1,0 +1,10 @@
+{
+	"name": "backbone.ui.dragndrop",
+	"version": "0.0.1",
+	"main": ["./assets/js/backbone.ui.dragndrop.js"],
+	"dependencies": {
+		"backbone" : ">=0.9.10",
+		"underscore" : ">=1.4.4",
+		"jquery" : ">=2.0.3"
+	}
+}
