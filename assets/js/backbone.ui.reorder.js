@@ -23,7 +23,8 @@
 			item : "li",
 			monitor: ["drag"],
 			hoverClass: "over",
-			method: "swap" // options: replace, inject
+			method: "inject", // options: swap, inject
+			dataAttr: "order"
 		}),
 
 		events : _.extend({}, View.prototype.events, {
@@ -35,6 +36,12 @@
 		initialize: function(){
 			var self = this;
 			_.bindAll(this, "_onDrag_Reorder", "_onDragOver_Reorder", "_onDragEnter_Reorder", "_onDragLeave_Reorder", "_onDrop_Reorder", "_preRender_Reorder", "_postRender_Reorder");
+			// make sure there's a data object
+			this.data = this.data || this.collection || null;
+			if( !_.isNull( this.data ) ){
+				// reorder based on the order attribute
+				this._reorder();
+			}
 			//if( !isAPP ){
 				// events
 				this.on("drag", this._onDrag_Reorder);
@@ -59,9 +66,19 @@
 			this.trigger("postRender");
 		},
 
+		// Internal methods
+		_reorder: function(){
+			var attr = this.options.dataAttr;
+			if( _.isUndefined(this.data.comparator) ){
+				this.data.comparator = function(model) {
+					return model.get(attr);
+				}
+			}
+			this.data.sort({silent: true});
+		},
+
 		_preRender_Reorder: function( e ){
-			// make sure there's a data object
-			this.data = this.data || this.collection || null;
+
 		},
 
 		_postRender_Reorder: function( e ){
@@ -74,6 +91,8 @@
 			this.oldEl = e.target;
 			if( _.isNull(this.data) ){
 				e.dataTransfer.setData('text/html', $(e.target).html() );
+			} else {
+				e.dataTransfer.setData('order', $(e.target).index() );
 			}
 		},
 
@@ -111,7 +130,6 @@
 				break;
 				case "inject":
 					var el = $(this.oldEl);
-					console.log( el , $(e.target));
 					$(e.target).before( $(this.oldEl) );
 					//$(this.oldEl).remove();
 				break;
@@ -119,7 +137,37 @@
 		},
 
 		_Reorder_data: function( e ){
-
+			// it's expected that there's a data attribute for rendering
+			var attr = this.options.dataAttr;
+			var drag = parseInt( e.dataTransfer.getData('order') );
+			var drop = $(e.target).index();
+			//
+			switch( this.options.method ){
+				case "swap":
+					// assuming ordering stars from 1 (not zero)
+					this.data.at(drag).set( attr, drop+1 );
+					this.data.at(drop).set( attr, drag+1 );
+				break;
+				case "inject":
+					this.data.at(drag).set( attr, drop );
+					this.data.each(function( item, i ){
+						if( i == drag ) return;
+						var value = item.get( attr );
+						// normalize order value to start from zero
+						var order = value-1;
+						if( order >= drop && order <= drag ){
+							// pushes all elements by one (under it)
+							item.set( attr, value+1 );
+						} else if( order > drag && order < drop ){
+							item.set( attr, value-1 );
+						}
+					});
+				break;
+			}
+			// sort data
+			this._reorder();
+			// re-render the views
+			this.render();
 		}
 
 

@@ -33,8 +33,9 @@ view.render();
 A more detailed list of all the available options.
 
 * ***item***: selector for the individual item - default: "li"
-* ***method***: how to treat the drop event, either swaping or injecting the position of the element  - default: "li"
-* ***hoverClass***: the class assigner to the items the dragged element is hovering ver - default: over
+* ***method***: how to treat the drop event, either swaping or injecting the position of the element  - default: "inject"
+* ***hoverClass***: the class assigner to the items the dragged element is hovering ver - default: "over"
+* ***dataAttr***: the key of the ordering attribute in the data model - default: "order"
 
 
 ## Examples

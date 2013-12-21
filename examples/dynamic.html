@@ -31,12 +31,7 @@
 </head>
 <body>
 
-	<ul id="list">
-		<li><a href="#one">Item 1</a></li>
-		<li><a href="#two">Item 2</a></li>
-		<li><a href="#three">Item 3</a></li>
-		<li><a href="#four">Item 4</a></li>
-	</ul>
+	<ul id="list"><!-- --></ul>
 
 
 <!-- Dependencies -->
@@ -50,13 +45,35 @@
 <!-- Extension lib -->
 <script src="../assets/js/backbone.ui.reorder.js"></script>
 
+<script type="text/html" id='template'>
+	<% _.each(items, function(item,key,list){ %>
+		<li><a href="<%= item.link %>"><%= item.label %></a></li>
+	<% }) %>
+</script>
 <script type="text/javascript">
 	//var DEBUG = true; // uncomment to receive console.logs
-	var view = new Backbone.UI.Reorder({
-		el : "#list"
+	var data = [
+		{ link: "#one", label: "Item 1", order: 1 },
+		{ link: "#two", label: "Item 2", order: 2 },
+		{ link: "#three", label: "Item 3", order: 3 },
+		{ link: "#four", label: "Item 4", order: 4 }
+	];
+
+	var Reorder = Backbone.UI.Reorder.extend({
+		// custom render method
+		render: function(){
+			var template = $("#template").html();
+			var html = _.template(template,{ items: this.collection.toJSON() })
+			$(this.el).html( html );
+			return Backbone.UI.Reorder.prototype.render.call(this);
+		}
+	});
+	var view = new Reorder({
+		el : "#list",
+		//method: "swap",
+		collection: new Backbone.Collection( data )
 	});
 	view.render();
 </script>
-
 </body>
 </html>
