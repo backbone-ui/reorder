@@ -1,0 +1,7 @@
+.ui-reorder {
+
+}
+
+.ui-reorder .over {
+	border: 2px dashed #000 !important;
+}
