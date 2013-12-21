@@ -22,7 +22,8 @@
 		options: _.extend({}, View.prototype.options, {
 			item : "li",
 			monitor: ["drag"],
-			hoverClass: "over"
+			hoverClass: "over",
+			method: "swap" // options: replace, inject
 		}),
 
 		events : _.extend({}, View.prototype.events, {
@@ -33,7 +34,7 @@
 
 		initialize: function(){
 			var self = this;
-			_.bindAll(this, "_onDrag_Reorder", "_onDragOver_Reorder", "_onDragEnter_Reorder", "_onDragLeave_Reorder", "_onDrop_Reorder", "_postRender_Reorder");
+			_.bindAll(this, "_onDrag_Reorder", "_onDragOver_Reorder", "_onDragEnter_Reorder", "_onDragLeave_Reorder", "_onDrop_Reorder", "_preRender_Reorder", "_postRender_Reorder");
 			//if( !isAPP ){
 				// events
 				this.on("drag", this._onDrag_Reorder);
@@ -41,6 +42,7 @@
 				this.on("dragenter", this._onDragEnter_Reorder);
 				this.on("dragleave", this._onDragLeave_Reorder);
 				this.on("drop", this._onDrop_Reorder);
+				this.on("preRender", this._preRender_Reorder);
 				this.on("postRender", this._postRender_Reorder);
 			//}
 			//
@@ -57,6 +59,11 @@
 			this.trigger("postRender");
 		},
 
+		_preRender_Reorder: function( e ){
+			// make sure there's a data object
+			this.data = this.data || this.collection || null;
+		},
+
 		_postRender_Reorder: function( e ){
 			// add draggable attribute to items
 			$(this.el).find(this.options.item).attr("draggable", true);
@@ -65,7 +72,9 @@
 		_onDrag_Reorder: function( e ) {
 			// move contents
 			this.oldEl = e.target;
-			e.dataTransfer.setData('text/html', $(e.target).html() );
+			if( _.isNull(this.data) ){
+				e.dataTransfer.setData('text/html', $(e.target).html() );
+			}
 		},
 
 		_onDragOver_Reorder: function( e ) {
@@ -87,10 +96,32 @@
 			// remove highlighted style
 			$(e.target).removeClass( this.options.hoverClass );
 			// reorder elements
-			var el = e.dataTransfer.getData('el');
-			$(this.oldEl).html( $(e.target).html() );
-			$(e.target).html( e.dataTransfer.getData('text/html') );
+			if( _.isNull(this.data) ){
+				this._Reorder_dom( e );
+			} else {
+				this._Reorder_data( e );
+			}
+		},
+
+		_Reorder_dom: function( e ){
+			switch( this.options.method ){
+				case "swap":
+					$(this.oldEl).html( $(e.target).html() );
+					$(e.target).html( e.dataTransfer.getData('text/html') );
+				break;
+				case "inject":
+					var el = $(this.oldEl);
+					console.log( el , $(e.target));
+					$(e.target).before( $(this.oldEl) );
+					//$(this.oldEl).remove();
+				break;
+			}
+		},
+
+		_Reorder_data: function( e ){
+
 		}
+
 
 	});
 

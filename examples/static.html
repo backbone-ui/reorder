@@ -51,11 +51,12 @@
 <script src="../assets/js/backbone.ui.reorder.js"></script>
 
 <script type="text/javascript">
-	var DEBUG = true;
-var view = new Backbone.UI.Reorder({
-		el : "#list"
-});
-view.render();
+	//var DEBUG = true; // uncomment to receive console.logs
+	var view = new Backbone.UI.Reorder({
+		el : "#list",
+		method: "inject"
+	});
+	view.render();
 </script>
 
 </body>
