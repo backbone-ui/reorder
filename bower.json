@@ -1,7 +1,7 @@
 {
-	"name": "backbone.ui.dragndrop",
+	"name": "backbone.ui.reorder",
 	"version": "0.0.1",
-	"main": ["./assets/js/backbone.ui.dragndrop.js"],
+	"main": ["./assets/js/backbone.ui.reorder.js"],
 	"dependencies": {
 		"backbone" : ">=0.9.10",
 		"underscore" : ">=1.4.4",
