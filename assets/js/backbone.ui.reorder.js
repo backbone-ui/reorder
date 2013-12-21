@@ -149,16 +149,17 @@
 					this.data.at(drop).set( attr, drag+1 );
 				break;
 				case "inject":
-					this.data.at(drag).set( attr, drop );
+					this.data.at(drag).set( attr, drop+1 );
+
 					this.data.each(function( item, i ){
 						if( i == drag ) return;
 						var value = item.get( attr );
 						// normalize order value to start from zero
 						var order = value-1;
-						if( order >= drop && order <= drag ){
+						if( order >= drop && order < drag ){
 							// pushes all elements by one (under it)
 							item.set( attr, value+1 );
-						} else if( order > drag && order < drop ){
+						} else if( order >= drag && order <= drop ){
 							item.set( attr, value-1 );
 						}
 					});
