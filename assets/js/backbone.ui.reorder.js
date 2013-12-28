@@ -92,9 +92,8 @@
 			this.oldEl = e.target;
 			if( _.isNull(this.data) ){
 				e.dataTransfer.setData('text/html', $(e.target).html() );
-			} else {
-				e.dataTransfer.setData('order', $(e.target).index() );
 			}
+			e.dataTransfer.setData('order', $(e.target).index() );
 		},
 
 		_onDragOver_Reorder: function( e ) {
@@ -124,17 +123,25 @@
 		},
 
 		_Reorder_dom: function( e ){
+			var drag = parseInt( e.dataTransfer.getData('order') );
 			var $el = $(e.target).closest( this.options.item );
+			var drop = $el.index();
 			switch( this.options.method ){
 				case "swap":
 					$(this.oldEl).html( $el.html() );
 					$el.html( e.dataTransfer.getData('text/html') );
 				break;
 				case "inject":
-					$el.before( $(this.oldEl) );
 					//$(this.oldEl).remove();
+					if( drop > drag ){
+						$el.after( $(this.oldEl) );
+					} else {
+						$el.before( $(this.oldEl) );
+					}
 				break;
 			}
+			// transmit order changed
+			this.trigger("reorder", { drag: drag, drop: drop });
 		},
 
 		_Reorder_data: function( e ){
