@@ -124,14 +124,14 @@
 		},
 
 		_Reorder_dom: function( e ){
+			var $el = $(e.target).closest( this.options.item );
 			switch( this.options.method ){
 				case "swap":
-					$(this.oldEl).html( $(e.target).html() );
-					$(e.target).html( e.dataTransfer.getData('text/html') );
+					$(this.oldEl).html( $el.html() );
+					$el.html( e.dataTransfer.getData('text/html') );
 				break;
 				case "inject":
-					var el = $(this.oldEl);
-					$(e.target).before( $(this.oldEl) );
+					$el.before( $(this.oldEl) );
 					//$(this.oldEl).remove();
 				break;
 			}
@@ -141,7 +141,8 @@
 			// it's expected that there's a data attribute for rendering
 			var attr = this.options.dataAttr;
 			var drag = parseInt( e.dataTransfer.getData('order') );
-			var drop = $(e.target).index();
+			var $el = $(e.target).closest( this.options.item );
+			var drop = $el.index();
 			//
 			switch( this.options.method ){
 				case "swap":
