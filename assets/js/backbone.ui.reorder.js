@@ -7,11 +7,12 @@
  * Released under the [MIT license](http://makesites.org/licenses/MIT)
  */
 
-(function($, _, Backbone, APP) {
+(function(w, _, Backbone, APP) {
 
 	// support for Backbone APP() view if available...
 	var isAPP = ( typeof APP !== "undefined" && typeof APP.View !== "undefined" );
 	var View = ( isAPP ) ? APP.View : Backbone.View;
+	var $ = w.jQuery || w.Zepto || w.$;
 	// this plugin depends on the mouse plugin
 	if( typeof Backbone.Input == "undefined" || typeof Backbone.Input.Mouse == "undefined" ) return console.log("Backbone.Input.Mouse is a required dependency for this plugin");
 
@@ -202,4 +203,4 @@
 	}
 
 
-})(this.jQuery, this._, this.Backbone, this.APP);
+})(this.window, this._, this.Backbone, this.APP);
