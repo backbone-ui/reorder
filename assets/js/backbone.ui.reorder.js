@@ -103,17 +103,20 @@
 
 		_onDragEnter_Reorder: function( e ) {
 			// add highlighted style
-			$(e.target).addClass( this.options.hoverClass );
+			var $el = $(e.target).closest( this.options.item );
+			$el.addClass( this.options.hoverClass ).siblings(this.options.item).removeClass( this.options.hoverClass );
 		},
 
 		_onDragLeave_Reorder: function( e ) {
 			// remove highlighted style
-			$(e.target).removeClass( this.options.hoverClass );
+			var $el = $(e.target).closest( this.options.item );
+			if( $el[0] === $(e.target)[0] ) $el.removeClass( this.options.hoverClass );
 		},
 
 		_onDrop_Reorder: function( e ){
 			// remove highlighted style
-			$(e.target).removeClass( this.options.hoverClass );
+			var $el = $(e.target).closest( this.options.item );
+			$el.removeClass( this.options.hoverClass );
 			// reorder elements
 			if( _.isNull(this.data) ){
 				this._Reorder_dom( e );
@@ -141,7 +144,7 @@
 				break;
 			}
 			// transmit order changed
-			this.trigger("reorder", { drag: drag, drop: drop });
+			this.trigger("reorder", { start: drag, end: drop, type: this.options.method  });
 		},
 
 		_Reorder_data: function( e ){
