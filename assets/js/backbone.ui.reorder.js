@@ -22,6 +22,7 @@
 
 		options: _.extend({}, View.prototype.options, {
 			item : "li",
+			itemClass : "item",
 			monitor: ["drag", "touch"],
 			hoverClass: "over",
 			method: "inject", // options: swap, inject
@@ -90,6 +91,7 @@
 		_postRender_Reorder: function( e ){
 			// add draggable attribute to items
 			$(this.el).find(this.options.item).attr("draggable", true);
+			$(this.el).find(this.options.item).addClass( this.options.itemClass );
 		},
 
 		_onDrag_Reorder: function( e ) {
@@ -120,31 +122,34 @@
 
 		_onDrop_Reorder: function( e ){
 			// remove highlighted style
-			var $el = $(e.target).closest( this.options.item );
-			$el.removeClass( this.options.hoverClass );
+			var $drop = $(e.target).closest( this.options.item );
+			var $drag = $(this.oldEl);
+			$drop.removeClass( this.options.hoverClass );
 			// reorder elements
 			if( _.isNull(this.data) ){
-				this._Reorder_dom( e );
+				this._Reorder_dom( $drag, $drop );
 			} else {
-				this._Reorder_data( e );
+				this._Reorder_data( $drag, $drop );
 			}
 		},
 
-		_Reorder_dom: function( e ){
-			var drag = parseInt( e.dataTransfer.getData('order') );
-			var $el = $(e.target).closest( this.options.item );
-			var drop = $el.index();
+		_Reorder_dom: function( $drag, $drop){
+			//var drag = parseInt( e.dataTransfer.getData('order') );
+			var drag = $drag.index();
+			var drop = $drop.index();
 			switch( this.options.method ){
 				case "swap":
-					$(this.oldEl).html( $el.html() );
-					$el.html( e.dataTransfer.getData('text/html') );
+					var html = $drag.html();
+					$drag.html( $drop.html() );
+					//$drop.html( e.dataTransfer.getData('text/html') );
+					$drop.html( html );
 				break;
 				case "inject":
 					//$(this.oldEl).remove();
 					if( drop > drag ){
-						$el.after( $(this.oldEl) );
+						$drop.after( $drag );
 					} else {
-						$el.before( $(this.oldEl) );
+						$drop.before( $drag );
 					}
 				break;
 			}
@@ -152,12 +157,12 @@
 			this.trigger("reorder", { start: drag, end: drop, type: this.options.method  });
 		},
 
-		_Reorder_data: function( e ){
+		_Reorder_data: function( $drag, $drop ){
 			// it's expected that there's a data attribute for rendering
 			var attr = this.options.dataAttr;
-			var drag = parseInt( e.dataTransfer.getData('order') );
-			var $el = $(e.target).closest( this.options.item );
-			var drop = $el.index();
+			//var drag = parseInt( e.dataTransfer.getData('order') );
+			var drag = $drag.index();
+			var drop = $drop.index();
 			//
 			switch( this.options.method ){
 				case "swap":
@@ -188,16 +193,71 @@
 			this.render();
 		},
 
-		_reorder_touchstart: function(){
+		_reorder_touchstart: function( e ){
+			// put this in the touch plugin
+			if (event.targetTouches.length == 1) {
+				var touch = event.targetTouches[0];
+				var coords = {
+					left: touch.pageX,
+					top: touch.pageY
+				}
+				//console.log( coords );
+			}
+			// find the element closest to the coords
+			var el = this._touch_findEl( this.options.item, coords );
+			if( el ){
+				this.oldEl = el;
+				// clone element
+				this._clonedEl = $( el ).clone().appendTo(this.el);
+				// separate the cloned element from the rest
+				this._clonedEl.removeClass( this.options.itemClass );
+				// get position relative to the parent
+				var pos = $(el).position();
+				this._clonedEl.css({ position: "absolute", top: pos.top, left: pos.left });
+			}
+			// save original position
+			this.coords_touch = coords;
 
 		},
 
 		_reorder_touchmove: function(){
-
+			// get latest coords
+			if (event.targetTouches.length == 1) {
+				var touch = event.targetTouches[0];
+				var coords = {
+					left: touch.pageX,
+					top: touch.pageY
+				}
+				//console.log( coords );
+			}
+			// update position of cloned el
+			if( this._clonedEl ){
+				var $clone = $(this._clonedEl);
+				var left = parseInt($clone.css("left")) + (coords.left - this.coords_touch.left);
+				var top = parseInt($clone.css("top")) + (coords.top - this.coords_touch.top);
+				$clone.css({ top: top, left: left });
+			}
+			// save coords for next event
+			this.coords_touch = coords;
+			var el = this._touch_findEl( "."+this.options.itemClass, coords );
+			// mimic a dragleave event...
+			$(el).addClass( this.options.hoverClass ).siblings( "."+this.options.itemClass ).removeClass( this.options.hoverClass );
 		},
 
 		_reorder_touchend: function(){
-
+			// remove cloned element
+			$(this._clonedEl).remove();
+			var $drag = $(this.oldEl);
+			// the one with the hover class is assumed the drop target
+			var $drop = $(this.el).find( this.options.item ).filter( "."+ this.options.hoverClass );
+			// remove styling
+			$drop.removeClass( this.options.hoverClass );
+			// reorder elements
+			if( _.isNull(this.data) ){
+				this._Reorder_dom( $drag, $drop );
+			} else {
+				this._Reorder_data( $drag, $drop );
+			}
 		}
 
 	});
