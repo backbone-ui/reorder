@@ -22,7 +22,7 @@
 
 		options: _.extend({}, View.prototype.options, {
 			item : "li",
-			monitor: ["drag"],
+			monitor: ["drag", "touch"],
 			hoverClass: "over",
 			method: "inject", // options: swap, inject
 			dataAttr: "order"
@@ -45,6 +45,7 @@
 			}
 			//if( !isAPP ){
 				// events
+			// drag
 				this.on("drag", this._onDrag_Reorder);
 				this.on("dragover", this._onDragOver_Reorder);
 				this.on("dragenter", this._onDragEnter_Reorder);
@@ -52,6 +53,10 @@
 				this.on("drop", this._onDrop_Reorder);
 				this.on("preRender", this._preRender_Reorder);
 				this.on("postRender", this._postRender_Reorder);
+			// touch
+				this.on("touchstart", this._reorder_touchstart);
+				this.on("touchmove", this._reorder_touchmove);
+				this.on("touchend", this._reorder_touchend);
 			//}
 			//
 			return View.prototype.initialize.apply(this, arguments );
@@ -181,8 +186,19 @@
 			this._reorder();
 			// re-render the views
 			this.render();
-		}
+		},
 
+		_reorder_touchstart: function(){
+
+		},
+
+		_reorder_touchmove: function(){
+
+		},
+
+		_reorder_touchend: function(){
+
+		}
 
 	});
 
