@@ -34,6 +34,7 @@
 		}),
 
 		oldEl: null,
+		_clonedEl: null,
 
 		initialize: function(){
 			var self = this;
@@ -196,8 +197,12 @@
 		},
 
 		_reorder_touchstart: function( e ){
+
+		},
+
+		_reorder_getEl: function( e ){
 			// put this in the touch plugin
-			if (event.targetTouches.length == 1) {
+			if (e.targetTouches.length == 1) {
 				var touch = event.targetTouches[0];
 				var coords = {
 					left: touch.pageX,
@@ -222,9 +227,11 @@
 
 		},
 
-		_reorder_touchmove: function(){
+		_reorder_touchmove: function( e ){
+			// on first move, get the element
+			if( _.isNull(this._clonedEl) ) this._reorder_getEl( e );
 			// get latest coords
-			if (event.targetTouches.length == 1) {
+			if (e.targetTouches.length == 1) {
 				var touch = event.targetTouches[0];
 				var coords = {
 					left: touch.pageX,
@@ -249,6 +256,7 @@
 		_reorder_touchend: function(){
 			// remove cloned element
 			$(this._clonedEl).remove();
+			this._clonedEl = null;
 			var $drag = $(this.oldEl);
 			// the one with the hover class is assumed the drop target
 			var $drop = $(this.el).find( this.options.item ).filter( "."+ this.options.hoverClass );
