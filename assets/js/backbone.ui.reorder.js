@@ -90,8 +90,10 @@
 
 		_postRender_Reorder: function( e ){
 			// add draggable attribute to items
-			$(this.el).find(this.options.item).attr("draggable", true);
-			$(this.el).find(this.options.item).addClass( this.options.itemClass );
+			var $el = $(this.el).find(this.options.item);
+			$el.attr("draggable", true);
+			$el.addClass( this.options.itemClass );
+			$el.addClass( "ui-reorder-item" );
 		},
 
 		_onDrag_Reorder: function( e ) {
@@ -210,7 +212,7 @@
 				// clone element
 				this._clonedEl = $( el ).clone().appendTo(this.el);
 				// separate the cloned element from the rest
-				this._clonedEl.removeClass( this.options.itemClass );
+				this._clonedEl.removeClass( "ui-reorder-item" );
 				// get position relative to the parent
 				var pos = $(el).position();
 				this._clonedEl.css({ position: "absolute", top: pos.top, left: pos.left });
@@ -239,9 +241,9 @@
 			}
 			// save coords for next event
 			this.coords_touch = coords;
-			var el = this._touch_findEl( "."+this.options.itemClass, coords );
+			var el = this._touch_findEl( ".ui-reorder-item", coords );
 			// mimic a dragleave event...
-			$(el).addClass( this.options.hoverClass ).siblings( "."+this.options.itemClass ).removeClass( this.options.hoverClass );
+			$(el).addClass( this.options.hoverClass ).siblings( ".ui-reorder-item" ).removeClass( this.options.hoverClass );
 		},
 
 		_reorder_touchend: function(){
