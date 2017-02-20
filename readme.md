@@ -40,7 +40,9 @@ A more detailed list of all the available options.
 
 ## Examples
 
-* [Static example](http://rawgithub.com/backbone-ui/reorder/master/examples/static.html)
+* [Static](http://rawgit.com/backbone-ui/reorder/master/examples/static.html)
+* [Dynamic](http://rawgit.com/backbone-ui/reorder/master/examples/dynamic.html)
+* [Touch](http://rawgit.com/backbone-ui/reorder/master/examples/touch.html)
 
 
 ## Credits
@@ -50,4 +52,3 @@ Initiated by Makis Tracend ( [@tracend](http://github.com/tracend) )
 Distributed through [Makesites.org](http://makesites.org/)
 
 Released under the [MIT license](http://makesites.org/licenses/MIT)
-
