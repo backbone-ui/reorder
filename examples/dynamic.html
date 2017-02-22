@@ -31,7 +31,7 @@
 </head>
 <body>
 
-	<ul id="list"><!-- --></ul>
+	<ul id="list" class="ui-reorder"><!-- --></ul>
 
 
 <!-- Dependencies -->
@@ -42,7 +42,8 @@
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
 <!-- using backbone extender -->
 <script type="text/javascript" src="//rawgit.com/tracend/5425415/raw/backbone.extender.js"></script>
-<script type="text/javascript" src="//rawgit.com/backbone-input/mouse/master/build/backbone.input.mouse.js"></script>
+<!-- script type="text/javascript" src="//rawgit.com/backbone-input/mouse/master/build/backbone.input.mouse.js"></script -->
+<script type="text/javascript" src="assets/js/libs/backbone.input.mouse.js"></script>
 
 <!-- Extension lib -->
 <script src="../assets/js/backbone.ui.reorder.js"></script>
@@ -71,10 +72,7 @@
 		}
 	});
 	var view = new Reorder({
-		el : "#list",
-		options: {
-			monitor: ["drag", "up"]
-		},
+		monitor: ["mouse"],
 		//method: "swap",
 		collection: new Backbone.Collection( data )
 	});

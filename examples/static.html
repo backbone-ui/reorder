@@ -31,7 +31,7 @@
 </head>
 <body>
 
-	<ul id="list">
+	<ul id="list" class="ui-reorder">
 		<li><a href="#one">Item 1</a></li>
 		<li><a href="#two">Item 2</a></li>
 		<li><a href="#three">Item 3</a></li>
@@ -46,7 +46,8 @@
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
 <!-- using backbone extender -->
 <script type="text/javascript" src="//rawgit.com/tracend/5425415/raw/backbone.extender.js"></script>
-<script type="text/javascript" src="//rawgit.com/backbone-input/mouse/master/build/backbone.input.mouse.js"></script>
+<!-- script type="text/javascript" src="//rawgit.com/backbone-input/mouse/master/build/backbone.input.mouse.js"></script -->
+<script type="text/javascript" src="assets/js/libs/backbone.input.mouse.js"></script>
 
 <!-- Extension lib -->
 <script src="../assets/js/backbone.ui.reorder.js"></script>
@@ -55,10 +56,7 @@
 	var View = Backbone.extend(Backbone.Input.Mouse, Backbone.UI.Reorder );
 	//var DEBUG = true; // uncomment to receive console.logs
 	var view = new View({
-		el : "#list",
-		options: {
-			monitor: ["drag", "up"]
-		}
+		monitor: ["mouse"]
 	});
 	view.render();
 </script>
