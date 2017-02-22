@@ -16,6 +16,10 @@
 	// this plugin depends on the mouse plugin
 	if( typeof Backbone.Input == "undefined" || typeof Backbone.Input.Mouse == "undefined" ) return console.log("Backbone.Input.Mouse is a required dependency for this plugin");
 
+	// Shims
+	// parent inheritance from Backbone.APP
+	var parent=function(a,b){a=a||"",b=b||{},this.__inherit=this.__inherit||[];var c=this.__inherit[a]||this._parent||{},d=c.prototype||this.__proto__.constructor.__super__,e=d[a]||function(){delete this.__inherit[a]},f=b instanceof Array?b:[b];return this.__inherit[a]=d._parent||function(){},e.apply(this,f)};
+
 	var Reorder = View.extend({
 		// default options
 		el: ".ui-reorder",
@@ -23,7 +27,7 @@
 		options: _.extend({}, View.prototype.options, {
 			item : "li",
 			itemClass : "item",
-			monitor: ["drag", "touch"],
+			monitor: ["mouse"], // ["drag", "touch"],
 			hoverClass: "over",
 			method: "inject", // options: swap, inject
 			dataAttr: "order"
@@ -36,7 +40,7 @@
 		oldEl: null,
 		_clonedEl: null,
 
-		initialize: function(){
+		initialize: function( options ){
 			var self = this;
 			_.bindAll(this, "_onDrag_Reorder", "_onDragOver_Reorder", "_onDragEnter_Reorder", "_onDragLeave_Reorder", "_onDrop_Reorder", "_preRender_Reorder", "_postRender_Reorder");
 			// make sure there's a data object
@@ -61,7 +65,9 @@
 				this.on("touchend", this._reorder_touchend);
 			//}
 			//
-			return View.prototype.initialize.apply(this, arguments );
+
+			//return View.prototype.initialize.apply(this, arguments );
+			return this.parent('initialize', options);
 		},
 
 		render: function(){
@@ -74,7 +80,13 @@
 			this.trigger("postRender");
 		},
 
-		// Internal methods
+		// Helpers
+
+		// call methods from the parent
+		parent: View.prototype.parent || parent,
+
+		// Internal
+
 		_reorder: function(){
 			var attr = this.options.dataAttr;
 			if( _.isUndefined(this.data.comparator) ){
