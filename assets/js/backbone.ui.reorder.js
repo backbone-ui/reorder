@@ -80,6 +80,13 @@
 			this.trigger("postRender");
 		},
 
+		// Events
+
+		// event after
+		onReorder: function(){
+
+		},
+
 		// Helpers
 
 		// call methods from the parent
@@ -169,7 +176,10 @@
 				break;
 			}
 			// transmit order changed
-			this.trigger("reorder", { start: drag, end: drop, type: this.options.method  });
+			var params = { start: drag, end: drop, type: this.options.method  };
+			this.trigger("reorder", params);
+			// user actions
+			this.onReorder(params);
 		},
 
 		_Reorder_data: function( $drag, $drop ){
