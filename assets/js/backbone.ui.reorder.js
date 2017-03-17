@@ -87,6 +87,18 @@
 
 		},
 
+		onDragIn: function(){
+
+		},
+
+		onDragOut: function(){
+
+		},
+
+		onDrop: function(){
+
+		},
+
 		// Helpers
 
 		// call methods from the parent
@@ -134,12 +146,16 @@
 			// add highlighted style
 			var $el = $(e.target).closest( this.options.item );
 			$el.addClass( this.options.hoverClass ).siblings(this.options.item).removeClass( this.options.hoverClass );
+			// user actions
+			this.onDragIn(e);
 		},
 
 		_onDragLeave_Reorder: function( e ) {
 			// remove highlighted style
 			var $el = $(e.target).closest( this.options.item );
 			if( $el[0] === $(e.target)[0] ) $el.removeClass( this.options.hoverClass );
+			// user actions
+			this.onDragOut(e);
 		},
 
 		_onDrop_Reorder: function( e ){
@@ -153,6 +169,8 @@
 			} else {
 				this._Reorder_data( $drag, $drop );
 			}
+			// user actions
+			this.onDrop(e);
 		},
 
 		_Reorder_dom: function( $drag, $drop){
