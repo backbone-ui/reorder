@@ -37,7 +37,7 @@
 
 		}),
 
-		oldEl: null,
+		_dragEl: null,
 		_clonedEl: null,
 
 		initialize: function( options ){
@@ -80,6 +80,13 @@
 			this.trigger("postRender");
 		},
 
+		add: function( el ){
+			console.log(this.el, el);
+			$(this.el).append(el);
+			// post-render
+			this.trigger("postRender");
+		},
+
 		// Events
 
 		// event after
@@ -97,6 +104,16 @@
 
 		onDrop: function(){
 
+		},
+
+		// returns the dragged element
+		getDragEl: function(){
+			return this._dragEl;
+		},
+
+		// deletes the dragged element
+		delDragEl: function(){
+			$(this._dragEl).remove();
 		},
 
 		// Helpers
@@ -130,7 +147,7 @@
 
 		_onDrag_Reorder: function( e ) {
 			// move contents
-			this.oldEl = e.target;
+			this._dragEl = e.target;
 			if( _.isNull(this.data) ){
 				e.dataTransfer.setData('text/html', $(e.target).html() );
 			}
@@ -161,7 +178,7 @@
 		_onDrop_Reorder: function( e ){
 			// remove highlighted style
 			var $drop = $(e.target).closest( this.options.item );
-			var $drag = $(this.oldEl);
+			var $drag = $(this._dragEl);
 			$drop.removeClass( this.options.hoverClass );
 			// reorder elements
 			if( _.isNull(this.data) ){
@@ -185,7 +202,7 @@
 					$drop.html( html );
 				break;
 				case "inject":
-					//$(this.oldEl).remove();
+					//$(this._dragEl).remove();
 					if( drop > drag ){
 						$drop.after( $drag );
 					} else {
@@ -253,7 +270,7 @@
 			// find the element closest to the coords
 			var el = this._touch_findEl( this.options.item, coords );
 			if( el ){
-				this.oldEl = el;
+				this._dragEl = el;
 				// clone element
 				this._clonedEl = $( el ).clone().appendTo(this.el);
 				// separate the cloned element from the rest
@@ -297,7 +314,7 @@
 			// remove cloned element
 			$(this._clonedEl).remove();
 			this._clonedEl = null;
-			var $drag = $(this.oldEl);
+			var $drag = $(this._dragEl);
 			// the one with the hover class is assumed the drop target
 			var $drop = $(this.el).find( this.options.item ).filter( "."+ this.options.hoverClass );
 			// remove styling
