@@ -145,9 +145,9 @@
 			$el.addClass( "ui-reorder-item" );
 		},
 
-		_onDrag_Reorder: function( e ) {
+		_onDrag_Reorder: function( e ){
 			// move contents
-			this._dragEl = e.target;
+			this._dragEl = $(e.target).closest(this.options.item);
 			if( _.isNull(this.data) ){
 				e.dataTransfer.setData('text/html', $(e.target).html() );
 			}
