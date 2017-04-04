@@ -188,6 +188,8 @@
 			}
 			// user actions
 			this.onDrop(e);
+			// end actions
+			delete this._dragEl;
 		},
 
 		_Reorder_dom: function( $drag, $drop){
